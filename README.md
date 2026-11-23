@@ -35,7 +35,23 @@ We plotted the answers at each prefix and read the trunk around the largest chan
 | 7 | 3 | From 810 to 840 tokens, the trunk started checking the list again. The share with 396 rose from 57% to 97% before the missing case appeared in the trunk. | [View plot](figures/task7-seed3-distribution.png) |
 | 11 | 2 | From 2520 to 2550 tokens, the trunk started checking whether its grid arrangement was possible. The share with the correct answer, 896, rose from 62% to 88%. Only 25 and 24 runs, respectively, finished with 896. | [View plot](figures/task11-seed2-distribution.png) |
 
-We also tested whether token surprisal and clusters of short continuations can help find these windows. [Interpretability experiments](https://github.com/perfectteatimer/Forking-tokens-in-LLM-reasoning/tree/interpretability)
+### Interpretability experiments
+
+We ranked 571 windows of 30 tokens each. In 6 windows, the answer distribution changed enough to pass a permutation test with a 5% false discovery rate.
+
+- **A1, token surprisal.** We added up the negative log probabilities of the 30 tokens the model actually chose, using their probabilities after sampling filters. None of the 113 windows with zero surprisal contained a marked fork.
+- **A2+B1, logits and clusters.** At each prefix, we took the next 30 tokens of the trunk and up to 30 tokens from each of its 100 continuations. We grouped them by similarity using MiniLM embeddings. We added three features to A2. They measure how rare the trunk's cluster is, how evenly the continuations split across clusters, and the mean distance between continuation embeddings. We trained a logistic regression on three trunks and tested it on the fourth, repeating this for each trunk.
+
+Reading windows in score order, we needed **16.6%** of the windows with A1 and **15.9%** with A2+B1 to find every marked fork, on average across the three trunks that had forks. A2 alone needed 17.5%. With random ordering, the expected share was 64.7%.
+
+To reproduce the window scores from the saved features and labels, run the following from the repository root.
+
+```sh
+cd interpretability
+python -m pip install numpy pandas pyarrow scipy scikit-learn
+python surprisal.py windows.parquet --output a1.csv
+python cluster_score.py windows.parquet --output a2_b1.csv
+```
 
 ### Checkpoint 4. ML service
 
