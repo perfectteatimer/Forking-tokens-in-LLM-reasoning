@@ -8,23 +8,34 @@ A research project on finding branching points in the reasoning of large languag
 
 ## Project plan
 
-### Checkpoint 1. Introduction and planning
+### Checkpoint 1. Literature review
 
-- Meet the research supervisor and discuss the project topic and main tasks.
-- Prepare a draft work plan for the year.
-- Create a GitHub repository.
+We read 7 papers on branching points, reinforcement learning, and how to interpret model behavior.
 
-### Checkpoint 2. Literature review
+- [Targeting Pivotal Decisions for Credit Assignment in Agentic Reinforcement Learning](https://arxiv.org/abs/2609.36178)
+- [Rethinking RL for LLM Reasoning: It's Sparse Policy Selection, Not Capability Learning](https://arxiv.org/abs/2605.06241)
+- [On the Biology of a Large Language Model](https://transformer-circuits.pub/2025/attribution-graphs/biology.html)
+- [TreePO](https://arxiv.org/abs/2508.17445)
+- [Forking Paths in Neural Text Generation](https://arxiv.org/abs/2412.07961)
+- [Forking Fast: Efficiently Estimating Uncertainty Dynamics in Text Generation](https://arxiv.org/abs/2608.19611)
+- [Beyond the 80/20 Rule: High-Entropy Minority Tokens Drive Effective Reinforcement Learning for LLM Reasoning](https://arxiv.org/abs/2506.01939)
 
-- Read key papers on the project topic.
-- Study existing approaches to finding branching points in LLM reasoning.
-- Discuss possible research directions.
+### Checkpoint 2. Resampling every 30 tokens
 
-### Checkpoint 3. First experiments
+We analyzed 4 reasoning traces from Qwen3.5-9B on 3 math problems. We call each original trace a *trunk*. Every 30 tokens, the model generated 100 continuations from the same trunk prefix. This gave us 57,500 continuations from 575 prefixes.
 
-- Select models and prepare the experiment environment.
-- Implement and test several baseline approaches.
-- Discuss initial results and next steps.
+### Checkpoint 3. Changes in the answer distribution
+
+We plotted the answers at each prefix and read the trunk around the largest changes. Each plot counts the last boxed answer in the prefix and continuation together, including runs that hit the length limit.
+
+| Task | Trunk seed | What changed | Plot |
+| --- | --- | --- | --- |
+| 4 | 2 | From 1140 to 1350 tokens, the trunk counted the size of the range and listed primes through 101. The share with the correct answer, 70, rose gradually from 62% to 99%. | [View plot](figures/task4-seed2-distribution.png) |
+| 7 | 2 | From 480 to 510 tokens, the trunk finished listing the possible cycle types of a permutation but left out `3+1+1+1`. The share with the correct answer, 396, fell from 65% to 14%. | [View plot](figures/task7-seed2-distribution.png) |
+| 7 | 3 | From 810 to 840 tokens, the trunk started checking the list again. The share with 396 rose from 57% to 97% before the missing case appeared in the trunk. | [View plot](figures/task7-seed3-distribution.png) |
+| 11 | 2 | From 2520 to 2550 tokens, the trunk started checking whether its grid arrangement was possible. The share with the correct answer, 896, rose from 62% to 88%. Only 25 and 24 runs, respectively, finished with 896. | [View plot](figures/task11-seed2-distribution.png) |
+
+We are now looking at how to use interpretability methods to study these changes inside the model. We will publish the full project code by the defense.
 
 ### Checkpoint 4. ML service
 
