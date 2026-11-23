@@ -35,7 +35,7 @@ We plotted the answers at each prefix and read the trunk around the largest chan
 | 7 | 3 | From 810 to 840 tokens, the trunk started checking the list again. The share with 396 rose from 57% to 97% before the missing case appeared in the trunk. | [View plot](figures/task7-seed3-distribution.png) |
 | 11 | 2 | From 2520 to 2550 tokens, the trunk started checking whether its grid arrangement was possible. The share with the correct answer, 896, rose from 62% to 88%. Only 25 and 24 runs, respectively, finished with 896. | [View plot](figures/task11-seed2-distribution.png) |
 
-We are now looking at how to use interpretability methods to study these changes inside the model. We will publish the full project code by the defense.
+We also tested whether token surprisal and clusters of short continuations can help find these windows. [Interpretability experiments](https://github.com/perfectteatimer/Forking-tokens-in-LLM-reasoning/tree/interpretability)
 
 ### Checkpoint 4. ML service
 
